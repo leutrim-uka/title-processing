@@ -24,8 +24,8 @@ process_file() {
   # Initialize an empty JSON object
   echo "{}" > "$output_file"
 
-  # Decompress the file, extract id and title, and format as JSON pairs
-  xzcat "$file" | jq -c '{id: .coreId, title: .title} | select(.coreId and .title)' | while IFS= read -r line; do
+  # Decompress the file, extract coreId and title, and format as JSON pairs
+  xzcat "$file" | jq -c '{coreId: .coreId, title: .title} | select(.coreId and .title)' | while IFS= read -r line; do
     local coreId
     local title
     coreId=$(echo "$line" | jq -r '.coreId')
