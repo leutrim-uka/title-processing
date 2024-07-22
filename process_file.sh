@@ -25,10 +25,10 @@ process_file() {
   echo "{}" > "$output_file"
 
   # Decompress the file, extract id and title, and format as JSON pairs
-  xzcat "$file" | jq -c '{id: .id, title: .title} | select(.id and .title)' | while IFS= read -r line; do
+  xzcat "$file" | jq -c '{coreId: .coreId, title: .title} | select(.coreId and .title)' | while IFS= read -r line; do
     local coreId
     local title
-    coreId=$(echo "$line" | jq -r '.id')
+    coreId=$(echo "$line" | jq -r '.coreId')
     title=$(echo "$line" | jq -r '.title')
     
     # Add the coreId-title pair to the JSON object
