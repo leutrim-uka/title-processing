@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Directory containing json.xz files
-input_dir="./data"
+input_dir="/app/data"
 
 # Directory to store the output JSON files
-output_dir="./title_jsons"
+output_dir="/app/title_jsons"
 
 # Create the output directory if it does not exist
 mkdir -p "$output_dir"
@@ -25,10 +25,10 @@ process_file() {
   echo "{}" > "$output_file"
 
   # Decompress the file, extract id and title, and format as JSON pairs
-  xzcat "$file" | jq -c '{coreId: .coreId, title: .title} | select(.coreId and .title)' | while IFS= read -r line; do
+  xzcat "$file" | jq -c '{id: .id, title: .title} | select(.id and .title)' | while IFS= read -r line; do
     local coreId
     local title
-    coreId=$(echo "$line" | jq -r '.coreId')
+    coreId=$(echo "$line" | jq -r '.id')
     title=$(echo "$line" | jq -r '.title')
     
     # Add the coreId-title pair to the JSON object
@@ -49,7 +49,7 @@ if [ ${#json_xz_files[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Run the processing in parallel with progress reporting
-printf "%s\n" "${json_xz_files[@]}" | parallel -j 40 --progress --eta process_file {} "$output_dir"
+# Run the processing in parallel without progress reporting
+printf "%s\n" "${json_xz_files[@]}" | parallel -j 40 process_file {} "$output_dir"
 
 echo "Processing completed."
